@@ -5,51 +5,47 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: gpallare <gpallare@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/17 09:52:19 by gpallare          #+#    #+#             */
-/*   Updated: 2024/01/17 10:25:58 by gpallare         ###   ########.fr       */
+/*   Created: 2024/03/12 12:26:54 by gpallare          #+#    #+#             */
+/*   Updated: 2024/03/12 12:34:29 by gpallare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	is_blank(char c)
-{
-	if (c <= 32)
-		return (1);
-	return (0);
-}
-
-int	is_valid(char c, int base)
-{
-	char	digits[17] = "abcdef0123456789";
-	char	digits2[17] = "ABCDEF0123456789";
-
-	while (base--)
-		if (digits[base] == c || digits2[base] == c)
-			return (1);
-	return (0);
-}
-
-int	value(char c)
+int	check(char c, char b)
 {
 	if (c >= '0' && c <= '9')
-		return (c - '0');
-	else if (c >= 'a' && c <= 'f')
-		return (c - 'a' + 10);
-	else if (c >= 'A' && c <= 'F')
-		return (c -'A' + 10);
+		return (1);
+	if (c >= 'a' && c <= 'f')
+		return (1);
+	if (c >= 'A' && c <= 'F')
+		c += 32;
 	return (0);
 }
 
 int	ft_atoi_base(const char *str, int str_base)
 {
-	int	result;
-	int	sign;
+	int	i;
+	int sign;
+	int	res;
 
-	result = 0;
-	while (is_blank(*str))
-		str++;
-	sign = (*str == '-') ? -1 : 1;
-	(*str == '-' || *str == '+') ? ++str : 0;
-	while (is_valid(*str, str_base))
-		result = result * str_base + value(*str++);
-	return (result * sign);
+	i = 0;
+	res = 0;
+	sign = 1;
+	while (str[i] && (str[i] == ' ' || str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '-')
+		sign *= -1;
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+	while (str[i] && check(str[i], str_base))
+	{
+		res *= str_base;
+		if (str[i] >= '0' && str[i] <= '9')
+			res += str[i] - '0';
+		if (str[i] >= 'a' && str[i] <= 'f')
+			res += (str[i] - 'a') + 10;
+		if (str[i] >= 'A' && str[i] <= 'F')
+			res += (str[i] - 'A') + 10;
+		i++;
+	}
+	return (res * sign);
 }
